@@ -15,4 +15,15 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DTOs\response\" />
+    <Folder Include="DTOs\request\" />
+    <Folder Include="Immplemntions\" />
+    <Folder Include="Utilities\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Workspace.Domain\Workspace.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
