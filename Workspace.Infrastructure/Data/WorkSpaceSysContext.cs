@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Workspace_Management_System.Entities;
+using Workspace_Managment_System.identity;
 
 namespace Workspace_Management_System.Data;
 
-public partial class WorkSpaceSysContext : DbContext
+public partial class WorkSpaceSysContext : IdentityDbContext<ApplicationUser>
 {
     public WorkSpaceSysContext()
     {
@@ -40,13 +42,14 @@ public partial class WorkSpaceSysContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=DESKTOP-PD9H1MG;Database=WorkSpaceSys;Trusted_Connection=True;TrustServerCertificate=True");
+        => optionsBuilder.UseSqlServer("Server=DESKTOP-PD9H1MG;Database=WorkSpaceSystem;Trusted_Connection=True;TrustServerCertificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
         modelBuilder.Entity<TbBooking>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__TbBookin__3214EC2799C40E10");
+            entity.HasKey(e => e.Id).HasName("PK__TbBookin__3214EC27BEC47BF2");
 
             entity.ToTable("TbBooking");
 
@@ -70,9 +73,9 @@ public partial class WorkSpaceSysContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Booking_Status");
             entity.HasOne(d => d.User)           // الفاتورة لها مستخدم واحد
-          .WithMany()                    // المستخدم يمكن أن يكون له فواتير متعددة (حتى لو لم نضف List في كلاس User)
-          .HasForeignKey(d => d.UserId)  // المفتاح الخارجي
-          .OnDelete(DeleteBehavior.Restrict);
+           .WithMany()                    // المستخدم يمكن أن يكون له فواتير متعددة (حتى لو لم نضف List في كلاس User)
+           .HasForeignKey(d => d.UserId)  // المفتاح الخارجي
+           .OnDelete(DeleteBehavior.Restrict); // يفضل Restrict مع الفواتير لعدم مسح الفاتورة لو حذف المستخدم
         });
 
         modelBuilder.Entity<TbBookingProduct>(entity =>
@@ -99,11 +102,11 @@ public partial class WorkSpaceSysContext : DbContext
 
         modelBuilder.Entity<TbInvoice>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__TbInvoic__3214EC27D3A57BB5");
+            entity.HasKey(e => e.Id).HasName("PK__TbInvoic__3214EC27D1866D83");
 
             entity.ToTable("TbInvoice");
 
-            entity.HasIndex(e => e.InvoiceNumber, "UQ__TbInvoic__D776E9819EF522B8").IsUnique();
+            entity.HasIndex(e => e.InvoiceNumber, "UQ__TbInvoic__D776E9816693A655").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.DiscountAmount).HasColumnType("money");
@@ -125,10 +128,11 @@ public partial class WorkSpaceSysContext : DbContext
                 .HasForeignKey(d => d.StatusId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Invoice_Status");
-           entity.HasOne(d => d.User)           // الفاتورة لها مستخدم واحد
+            entity.HasOne(d => d.User)           // الفاتورة لها مستخدم واحد
           .WithMany()                    // المستخدم يمكن أن يكون له فواتير متعددة (حتى لو لم نضف List في كلاس User)
           .HasForeignKey(d => d.UserId)  // المفتاح الخارجي
-          .OnDelete(DeleteBehavior.Restrict);
+          .OnDelete(DeleteBehavior.Restrict); // يفضل Restrict مع الفواتير لعدم مسح الفاتورة لو حذف المستخدم
+
         });
 
         modelBuilder.Entity<TbInvoiceBooking>(entity =>
@@ -158,7 +162,7 @@ public partial class WorkSpaceSysContext : DbContext
 
         modelBuilder.Entity<TbMedium>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__TbMedia__3214EC27B5D05E32");
+            entity.HasKey(e => e.Id).HasName("PK__TbMedia__3214EC2720E6FCBA");
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.RelativePathFile).HasMaxLength(500);
@@ -172,7 +176,7 @@ public partial class WorkSpaceSysContext : DbContext
 
         modelBuilder.Entity<TbPricingType>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__TbPricin__3214EC2759277269");
+            entity.HasKey(e => e.Id).HasName("PK__TbPricin__3214EC27D0AA45A7");
 
             entity.ToTable("TbPricingType");
 
@@ -182,7 +186,7 @@ public partial class WorkSpaceSysContext : DbContext
 
         modelBuilder.Entity<TbProduct>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__TbProduc__3214EC27DF8CC838");
+            entity.HasKey(e => e.Id).HasName("PK__TbProduc__3214EC27683B6026");
 
             entity.ToTable("TbProduct");
 
@@ -193,7 +197,7 @@ public partial class WorkSpaceSysContext : DbContext
 
         modelBuilder.Entity<TbRoom>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__TbRoom__3214EC2719D04C6E");
+            entity.HasKey(e => e.Id).HasName("PK__TbRoom__3214EC27F54565C8");
 
             entity.ToTable("TbRoom");
 
@@ -210,11 +214,11 @@ public partial class WorkSpaceSysContext : DbContext
 
         modelBuilder.Entity<TbSetting>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__TbSettin__3214EC270CDDF9CE");
+            entity.HasKey(e => e.Id).HasName("PK__TbSettin__3214EC2784368E9B");
 
             entity.ToTable("TbSetting");
 
-            entity.HasIndex(e => e.KeyName, "UQ__TbSettin__F0A2A337878EAF24").IsUnique();
+            entity.HasIndex(e => e.KeyName, "UQ__TbSettin__F0A2A3372F699BDC").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Description).HasMaxLength(500);
@@ -224,7 +228,7 @@ public partial class WorkSpaceSysContext : DbContext
 
         modelBuilder.Entity<TbStatus>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__TbStatus__3214EC276FA2DC0B");
+            entity.HasKey(e => e.Id).HasName("PK__TbStatus__3214EC272F2BE8D6");
 
             entity.ToTable("TbStatus");
 
@@ -240,7 +244,7 @@ public partial class WorkSpaceSysContext : DbContext
 
         modelBuilder.Entity<TbStatusType>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__TbStatus__3214EC2728004003");
+            entity.HasKey(e => e.Id).HasName("PK__TbStatus__3214EC27AFD78D69");
 
             entity.ToTable("TbStatusType");
 

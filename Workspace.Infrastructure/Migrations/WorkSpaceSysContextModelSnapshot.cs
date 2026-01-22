@@ -8,7 +8,7 @@ using Workspace_Management_System.Data;
 
 #nullable disable
 
-namespace Workspace_Management_System.Migrations
+namespace Workspace.Infrastructure.Migrations
 {
     [DbContext(typeof(WorkSpaceSysContext))]
     partial class WorkSpaceSysContextModelSnapshot : ModelSnapshot
@@ -21,6 +21,139 @@ namespace Workspace_Management_System.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens", (string)null);
+                });
 
             modelBuilder.Entity("Workspace_Management_System.Entities.TbBooking", b =>
                 {
@@ -61,7 +194,7 @@ namespace Workspace_Management_System.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id")
-                        .HasName("PK__TbBookin__3214EC2799C40E10");
+                        .HasName("PK__TbBookin__3214EC27BEC47BF2");
 
                     b.HasIndex("RoomId");
 
@@ -168,13 +301,13 @@ namespace Workspace_Management_System.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id")
-                        .HasName("PK__TbInvoic__3214EC27D3A57BB5");
+                        .HasName("PK__TbInvoic__3214EC27D1866D83");
 
                     b.HasIndex("StatusId");
 
                     b.HasIndex("UserId");
 
-                    b.HasIndex(new[] { "InvoiceNumber" }, "UQ__TbInvoic__D776E9819EF522B8")
+                    b.HasIndex(new[] { "InvoiceNumber" }, "UQ__TbInvoic__D776E9816693A655")
                         .IsUnique();
 
                     b.ToTable("TbInvoice", (string)null);
@@ -227,7 +360,7 @@ namespace Workspace_Management_System.Migrations
                         .HasColumnName("RoomID");
 
                     b.HasKey("Id")
-                        .HasName("PK__TbMedia__3214EC27B5D05E32");
+                        .HasName("PK__TbMedia__3214EC2720E6FCBA");
 
                     b.HasIndex("RoomId");
 
@@ -252,7 +385,7 @@ namespace Workspace_Management_System.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id")
-                        .HasName("PK__TbPricin__3214EC2759277269");
+                        .HasName("PK__TbPricin__3214EC27D0AA45A7");
 
                     b.ToTable("TbPricingType", (string)null);
                 });
@@ -278,7 +411,7 @@ namespace Workspace_Management_System.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id")
-                        .HasName("PK__TbProduc__3214EC27DF8CC838");
+                        .HasName("PK__TbProduc__3214EC27683B6026");
 
                     b.ToTable("TbProduct", (string)null);
                 });
@@ -308,7 +441,7 @@ namespace Workspace_Management_System.Migrations
                         .HasColumnType("nvarchar(200)");
 
                     b.HasKey("Id")
-                        .HasName("PK__TbRoom__3214EC2719D04C6E");
+                        .HasName("PK__TbRoom__3214EC27F54565C8");
 
                     b.HasIndex("PricingTypeId");
 
@@ -339,9 +472,9 @@ namespace Workspace_Management_System.Migrations
                         .HasColumnType("nvarchar(500)");
 
                     b.HasKey("Id")
-                        .HasName("PK__TbSettin__3214EC270CDDF9CE");
+                        .HasName("PK__TbSettin__3214EC2784368E9B");
 
-                    b.HasIndex(new[] { "KeyName" }, "UQ__TbSettin__F0A2A337878EAF24")
+                    b.HasIndex(new[] { "KeyName" }, "UQ__TbSettin__F0A2A3372F699BDC")
                         .IsUnique();
 
                     b.ToTable("TbSetting", (string)null);
@@ -366,7 +499,7 @@ namespace Workspace_Management_System.Migrations
                         .HasColumnName("StatusTypeID");
 
                     b.HasKey("Id")
-                        .HasName("PK__TbStatus__3214EC276FA2DC0B");
+                        .HasName("PK__TbStatus__3214EC272F2BE8D6");
 
                     b.HasIndex("StatusTypeId");
 
@@ -388,7 +521,7 @@ namespace Workspace_Management_System.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id")
-                        .HasName("PK__TbStatus__3214EC2728004003");
+                        .HasName("PK__TbStatus__3214EC27AFD78D69");
 
                     b.ToTable("TbStatusType", (string)null);
                 });
@@ -402,10 +535,12 @@ namespace Workspace_Management_System.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
@@ -421,10 +556,12 @@ namespace Workspace_Management_System.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("NormalizedEmail")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("NormalizedUserName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
@@ -442,11 +579,71 @@ namespace Workspace_Management_System.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("ApplicationUser");
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.HasOne("Workspace_Managment_System.identity.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.HasOne("Workspace_Managment_System.identity.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Workspace_Managment_System.identity.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.HasOne("Workspace_Managment_System.identity.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Workspace_Management_System.Entities.TbBooking", b =>
