@@ -13,9 +13,9 @@ namespace Workspace_Management_System.Controllers
     public class StatusTypeController : ControllerBase
     {
         IGenricRepo<TbStatusType> _genricRepo;
-        ILookupService _lookupService;
+        IStatusTypeLookupService _lookupService;
 
-        public StatusTypeController(IGenricRepo<TbStatusType> genricRepo, ILookupService lookupService)
+        public StatusTypeController(IGenricRepo<TbStatusType> genricRepo, IStatusTypeLookupService lookupService)
         {
             _genricRepo = genricRepo;
             _lookupService = lookupService;
@@ -30,7 +30,7 @@ namespace Workspace_Management_System.Controllers
         [HttpGet("search/{TypeName}")]
         public IActionResult getByName(string TypeName)
         {
-            var result = _lookupService.GetAllCachedStatusTypes().FirstOrDefault(x => x.TypeName == TypeName);
+            var result = _lookupService.GetAllCachedStatusTypes().FirstOrDefault(x => x.TypeName.ToLower().Trim() == TypeName.ToLower().Trim());
             if (result == null ) return ApiResponseHelper.Failure(Errors: "Not found type", StatusCode: 404);
             return ApiResponseHelper.Success(result, StatusCode: 200);
         }
@@ -62,11 +62,11 @@ namespace Workspace_Management_System.Controllers
                 statusType.TypeName = dto.TypeName;
                 _genricRepo.update(statusType);
                 _lookupService.RefreshCache();
-                return ApiResponseHelper.Success(Data: "The status type is created", StatusCode: 200);
+                return ApiResponseHelper.Success(Data: "The status type is updated", StatusCode: 200);
             }
             catch
             {
-                return ApiResponseHelper.Failure(Errors: "Faild to create status type", StatusCode: 500);
+                return ApiResponseHelper.Failure(Errors: "Faild to update status type", StatusCode: 500);
             }
         }
 
