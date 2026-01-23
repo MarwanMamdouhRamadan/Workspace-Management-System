@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using Workspace.Application.DTOs.request;
 using Workspace.Infrastructure.Repositories.Interfaces;
 using Workspace_Management_System.Data;
 
 namespace Workspace.Infrastructure.Repositories.Immplemntions
 {
-    public class StatusTypeLookupService
+    public class StatusTypeLookupService : IStatusTypeLookupService
     {
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly object _look = new();
