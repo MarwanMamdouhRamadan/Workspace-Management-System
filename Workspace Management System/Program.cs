@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Workspace.Application.Interfaces;
 using Workspace.Application.Services;
+using Workspace.Infrastructure.Repositories.Immplemntions;
 using Workspace.Infrastructure.Repositories.Implemntion;
 using Workspace.Infrastructure.Repositories.Interfaces;
 using Workspace_Management_System.Data;
@@ -137,6 +138,8 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 #endregion
 #region DI
 builder.Services.AddScoped<IAuthServiecs, AuthServiecs>();
+builder.Services.AddScoped(typeof(IGenricRepo<>),typeof(GenricRepo<>));
+builder.Services.AddSingleton<ILookupService, LookupService>();
 #endregion
 
 var app = builder.Build();
