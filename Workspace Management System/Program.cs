@@ -139,7 +139,7 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 #region DI
 builder.Services.AddScoped<IAuthServiecs, AuthServiecs>();
 builder.Services.AddScoped(typeof(IGenricRepo<>),typeof(GenricRepo<>));
-builder.Services.AddSingleton<ILookupService, LookupService>();
+builder.Services.AddSingleton<IStatusTypeLookupService, StatusTypeLookupService>();
 #endregion
 
 var app = builder.Build();
