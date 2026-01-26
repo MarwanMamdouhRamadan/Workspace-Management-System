@@ -7,9 +7,10 @@ using Workspace.Application.Interfaces;
 using Workspace.Application.Services;
 using Workspace.Infrastructure.Repositories.Immplemntions;
 using Workspace.Infrastructure.Repositories.Implemntion;
-using Workspace.Infrastructure.Repositories.Interfaces;
+using Workspace.Infrastructure;
 using Workspace_Management_System.Data;
 using Workspace_Managment_System.identity;
+using Workspace.Application.Immplemntions;
 
 var builder = WebApplication.CreateBuilder(args);
 #region Add services to the container
@@ -139,8 +140,9 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 #region DI
 builder.Services.AddScoped<IAuthServiecs, AuthServiecs>();
 builder.Services.AddScoped(typeof(IGenricRepo<>),typeof(GenricRepo<>));
-builder.Services.AddSingleton<IStatusTypeLookupService, StatusTypeLookupService>();
 builder.Services.AddSingleton<IStatusLookupService, StatusLookupService>();
+builder.Services.AddScoped<IProductRepo, ProductRepo>();
+builder.Services.AddScoped<IProductServices, ProductServices>();
 #endregion
 
 var app = builder.Build();
