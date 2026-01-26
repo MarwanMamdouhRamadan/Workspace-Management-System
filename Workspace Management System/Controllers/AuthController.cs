@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Workspace.Application.DTOs;
 using Workspace.Application.Interfaces;
 using Workspace.Application.Utilities;
-using Workspace.Infrastructure.Repositories.Interfaces;
+using Workspace.Infrastructure;
 
 namespace Workspace_Management_System.Controllers
 {

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Workspace.Application.DTOs.request;
 using Workspace.Application.Interfaces;
 using Workspace.Application.Utilities;
-using Workspace.Infrastructure.Repositories.Interfaces;
+using Workspace.Infrastructure;
 using Workspace_Management_System.Entities;
 
 namespace Workspace_Management_System.Controllers
