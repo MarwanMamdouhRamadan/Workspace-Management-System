@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Workspace.Application.DTOs.request;
+using Workspace.Application.Interfaces;
 using Workspace.Application.Utilities;
 using Workspace.Infrastructure.Repositories.Interfaces;
 using Workspace_Management_System.Entities;
@@ -13,9 +14,9 @@ namespace Workspace_Management_System.Controllers
     public class StatusTypeController : ControllerBase
     {
         IGenricRepo<TbStatusType> _genricRepo;
-        IStatusTypeLookupService _lookupService;
+        IStatusLookupService _lookupService;
 
-        public StatusTypeController(IGenricRepo<TbStatusType> genricRepo, IStatusTypeLookupService lookupService)
+        public StatusTypeController(IGenricRepo<TbStatusType> genricRepo, IStatusLookupService lookupService)
         {
             _genricRepo = genricRepo;
             _lookupService = lookupService;
@@ -23,14 +24,14 @@ namespace Workspace_Management_System.Controllers
         [HttpGet]
         public IActionResult getAll()
         {
-            var result = _lookupService.GetAllCachedStatusTypes();
+            var result = _lookupService.GetStatusTypes();
             if (result == null || !result.Any()) return  ApiResponseHelper.Failure(Errors: "Not found types yet", StatusCode: 404);
             return ApiResponseHelper.Success(result, StatusCode:200);
         }
         [HttpGet("search/{TypeName}")]
         public IActionResult getByName(string TypeName)
         {
-            var result = _lookupService.GetAllCachedStatusTypes().FirstOrDefault(x => x.TypeName.ToLower().Trim() == TypeName.ToLower().Trim());
+            var result = _lookupService.GetStatusTypes().FirstOrDefault(x => x.TypeName.ToLower().Trim() == TypeName.ToLower().Trim());
             if (result == null ) return ApiResponseHelper.Failure(Errors: "Not found type", StatusCode: 404);
             return ApiResponseHelper.Success(result, StatusCode: 200);
         }

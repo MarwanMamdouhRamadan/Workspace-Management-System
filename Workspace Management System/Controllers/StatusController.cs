@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Workspace.Application.DTOs.request;
+using Workspace.Application.Interfaces;
 using Workspace.Application.Utilities;
 using Workspace.Infrastructure.Repositories.Interfaces;
 using Workspace_Management_System.Entities;
@@ -22,14 +23,14 @@ namespace Workspace_Management_System.Controllers
         [HttpGet]
         public IActionResult getAll()
         {
-            var result = _lookupService.GetAllCachedStatusTypes();
+            var result = _lookupService.GetStatuses();
             if (result == null || !result.Any()) return ApiResponseHelper.Failure(Errors: "Not found status yet", StatusCode: 404);
             return ApiResponseHelper.Success(result, StatusCode: 200);
         }
         [HttpGet("search/{TypeName}")]
         public IActionResult getByName(string TypeName)
         {
-            var result = _lookupService.GetAllCachedStatusTypes().FirstOrDefault(x => x.StatusName.ToLower().Trim() == TypeName.ToLower().Trim());
+            var result = _lookupService.GetStatuses().FirstOrDefault(x => x.StatusName.ToLower().Trim() == TypeName.ToLower().Trim());
             if (result == null) return ApiResponseHelper.Failure(Errors: "Not found status", StatusCode: 404);
             return ApiResponseHelper.Success(result, StatusCode: 200);
         }
