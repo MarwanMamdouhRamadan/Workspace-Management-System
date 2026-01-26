@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Workspace.Application.DTOs.request;
+using Workspace.Application.DTOs.response;
 
 namespace Workspace.Infrastructure.Repositories.Interfaces
 {
     public interface IStatusTypeLookupService
     {
-        IEnumerable<StatusTypeDto> GetAllCachedStatusTypes();
+        IEnumerable<StatusTypeDtoResponse> GetAllCachedStatusTypes();
         void RefreshCache();
     }
 }
