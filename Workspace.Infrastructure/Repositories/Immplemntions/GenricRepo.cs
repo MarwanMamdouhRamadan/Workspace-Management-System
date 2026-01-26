@@ -37,7 +37,7 @@ namespace Workspace.Infrastructure.Repositories.Immplemntions
             return await _dbSet.ToListAsync();
         }
 
-        public async Task<T> getById(int id)
+        public async Task<T> getById(long id)
         {
             return await _dbSet.FindAsync(id);
         }
