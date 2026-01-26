@@ -193,6 +193,8 @@ public partial class WorkSpaceSysContext : IdentityDbContext<ApplicationUser>
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Price).HasColumnType("money");
             entity.Property(e => e.ProductName).HasMaxLength(200);
+            entity.HasIndex(p => p.StatusId)
+           .IsUnique(false);
         });
 
         modelBuilder.Entity<TbRoom>(entity =>

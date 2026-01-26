@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 using Workspace.Application.DTOs;
 using Workspace.Application.Interfaces;
 using Workspace.Application.Utilities;
-using Workspace.Infrastructure.Repositories.Interfaces;
+using Workspace.Infrastructure;
 using Workspace_Managment_System.identity;
 using Microsoft.AspNetCore.Identity;
 namespace Workspace.Application.Services

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Workspace_Managment_System.identity;
 
-namespace Workspace.Infrastructure.Repositories.Interfaces
+namespace Workspace.Application.Interfaces
 {
     public interface IJwtService
     {

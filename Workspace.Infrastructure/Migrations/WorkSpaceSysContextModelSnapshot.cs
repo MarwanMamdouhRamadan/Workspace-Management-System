@@ -407,11 +407,16 @@ namespace Workspace.Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<long>("StatusId")
+                        .HasColumnType("bigint");
+
                     b.Property<int>("Stock")
                         .HasColumnType("int");
 
                     b.HasKey("Id")
                         .HasName("PK__TbProduc__3214EC27683B6026");
+
+                    b.HasIndex("StatusId");
 
                     b.ToTable("TbProduct", (string)null);
                 });
@@ -741,6 +746,17 @@ namespace Workspace.Infrastructure.Migrations
                     b.Navigation("Room");
                 });
 
+            modelBuilder.Entity("Workspace_Management_System.Entities.TbProduct", b =>
+                {
+                    b.HasOne("Workspace_Management_System.Entities.TbStatus", "tbStatus")
+                        .WithOne("Product")
+                        .HasForeignKey("Workspace_Management_System.Entities.TbProduct", "StatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("tbStatus");
+                });
+
             modelBuilder.Entity("Workspace_Management_System.Entities.TbRoom", b =>
                 {
                     b.HasOne("Workspace_Management_System.Entities.TbPricingType", "PricingType")
@@ -794,6 +810,9 @@ namespace Workspace.Infrastructure.Migrations
 
             modelBuilder.Entity("Workspace_Management_System.Entities.TbStatus", b =>
                 {
+                    b.Navigation("Product")
+                        .IsRequired();
+
                     b.Navigation("TbBookings");
 
                     b.Navigation("TbInvoices");

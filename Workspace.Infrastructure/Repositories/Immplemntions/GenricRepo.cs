@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Workspace.Infrastructure.Repositories.Interfaces;
+using Workspace.Application;
+using Workspace.Application.Interfaces;
+using Workspace.Infrastructure;
 using Workspace_Management_System.Data;
 
 namespace Workspace.Infrastructure.Repositories.Immplemntions

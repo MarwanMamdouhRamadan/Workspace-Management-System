@@ -12,6 +12,7 @@ public partial class TbStatus
     public long StatusTypeId { get; set; }
 
     public virtual TbStatusType StatusType { get; set; } = null!;
+    public virtual TbProduct Product { get; set; } = null!;
 
     public virtual ICollection<TbBooking> TbBookings { get; set; } = new List<TbBooking>();
 

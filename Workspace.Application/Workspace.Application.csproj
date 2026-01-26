@@ -17,10 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Immplemntions\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Workspace.Domain\Workspace.Domain.csproj" />
   </ItemGroup>
 

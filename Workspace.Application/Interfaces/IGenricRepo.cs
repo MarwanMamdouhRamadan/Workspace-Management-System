@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Workspace.Infrastructure.Repositories.Interfaces
+namespace Workspace.Application.Interfaces
 {
     public interface IGenricRepo<T> where T : class
     {

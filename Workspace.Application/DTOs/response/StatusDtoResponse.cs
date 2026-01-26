@@ -9,7 +9,8 @@ namespace Workspace.Application.DTOs.response
 {
     public class StatusDtoResponse
     {
-        [Required(ErrorMessage = "please enter the status name")]
+        public long id {  get; set; }
         public string StatusName { get; set; } = null!;
+        public long StatusTypeId { get; set; }
     }
 }

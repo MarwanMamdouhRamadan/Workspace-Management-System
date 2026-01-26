@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using Workspace.Infrastructure.Repositories.Interfaces;
+using Workspace.Application.Interfaces;
+using Workspace.Infrastructure;
 using Workspace_Managment_System.identity;
 
 
