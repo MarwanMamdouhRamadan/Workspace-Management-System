@@ -24,73 +24,43 @@ namespace Workspace_Management_System.Controllers
         public async Task<IActionResult> getProductsByStatus(long statusId)
         {
             var products = await _productServices.getProductsByStatus(statusId);
-            return products != null ?ApiResponseHelper.Success(products, StatusCode: 200) : ApiResponseHelper.Failure(Errors:"Not found products",StatusCode:404);
+            return ApiResponseHelper.Success(products, StatusCode: 200);
         }
         [HttpGet]
         public async Task<IActionResult> getAll()
         {
             var products = await _productServices.getAll();
-
-            return products != null ? ApiResponseHelper.Success(products, StatusCode: 200): ApiResponseHelper.Failure(Errors: "No Products yet", 404) ;
+            return ApiResponseHelper.Success(products, StatusCode: 200);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> getById(long id)
         {
             var product = await _productServices.getById(id);
-
-            return product != null ? ApiResponseHelper.Success(Data: product, StatusCode: 200) : ApiResponseHelper.Failure(Errors: "Not Found Product", StatusCode: 404);
+            return ApiResponseHelper.Success(Data: product, StatusCode: 200);
         }
         [HttpPost]
         public async Task<IActionResult> addProduct([FromBody] ProductDto dto)
         {
-            try
-            {
-                var check = await _productServices.addProduct(dto);
-                return check == true? ApiResponseHelper.Success(Data: "Product is craeted", StatusCode: 200) : ApiResponseHelper.Failure(Errors: "Faild to create product ", StatusCode: 200);
-            }
-            catch (Exception ex)
-            {
-                return ApiResponseHelper.Failure(Errors: "Faild to create product ", StatusCode: 500);
-            }
+            await _productServices.addProduct(dto);
+            return ApiResponseHelper.Success(Data: "Product is craeted", StatusCode: 200);
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> putProduct(long id, [FromBody] ProductDto dto)
         {
-            try
-            {
-               var check =  await _productServices.putProduct(id, dto);
-                return check == true ? ApiResponseHelper.Success(Data: "Product is updated", StatusCode: 200) : ApiResponseHelper.Failure(Errors: "Faild to update product ", StatusCode: 200);
-            }
-            catch (Exception ex)
-            {
-                return ApiResponseHelper.Failure(Errors: "Faild to update product ", StatusCode: 500);
-            }
+            await _productServices.putProduct(id, dto);
+            return ApiResponseHelper.Success(Data: "Product is updated", StatusCode: 200);
         }
         [HttpPut("DeleteProduct/{id}")]
         public async Task<IActionResult> deleteProduct(long id)
         {
-            try
-            {
-                var check = await _productServices.deleteProduct(id);
-                return check == true ? ApiResponseHelper.Success(Data: "Product is deleted", StatusCode: 200) : ApiResponseHelper.Failure(Errors: "Faild to delete product ", StatusCode: 200);
-            }
-            catch (Exception ex)
-            {
-                return ApiResponseHelper.Failure(Errors: "Faild to delete product ", StatusCode: 500);
-            }
+             await _productServices.deleteProduct(id);
+             return ApiResponseHelper.Success(Data: "Product is deleted", StatusCode: 200);
         }
         [HttpPut("ChangeProductStatus")]
         public async Task<IActionResult> changeProductStatus([FromBody]PutProductStatus dto)
         {
-            try
-            {
-               var check =  await _productServices.changeProductStatus(dto);
-                return check == true ? ApiResponseHelper.Success(Data: "Product is updated", StatusCode: 200) : ApiResponseHelper.Failure(Errors: "Faild to update product ", StatusCode: 200);
-            }
-            catch
-            {
-                return ApiResponseHelper.Failure(Errors: "Faild to update product ", StatusCode: 500);
-            }
+            await _productServices.changeProductStatus(dto);
+            return ApiResponseHelper.Success(Data: "Product is updated", StatusCode: 200);
         }
     }
 }

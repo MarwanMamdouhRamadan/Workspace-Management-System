@@ -11,6 +11,7 @@ using Workspace.Infrastructure;
 using Workspace_Management_System.Data;
 using Workspace_Managment_System.identity;
 using Workspace.Application.Immplemntions;
+using Workspace_Management_System.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 #region Add services to the container
@@ -157,7 +158,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-
+app.UseMiddleware<ExceptionMiddleware>();
 app.MapControllers();
 
 app.Run();

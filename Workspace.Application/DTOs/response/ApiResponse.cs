@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Workspace.Application.DTOs
 {
-    internal class ApiResponse
+    public class ApiResponse
     {
         public object Data {  get; set; }
         public object Errors { get; set; }

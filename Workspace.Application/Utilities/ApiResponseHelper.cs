@@ -39,5 +39,23 @@ namespace Workspace.Application.Utilities
                 StatusCode = StatusCode
             };
         }
+        public static ApiResponse FailureObject(object Errors, int StatusCode = 400)
+        {
+            return new ApiResponse
+            {
+                Data = null,
+                Errors = Errors,
+                StatusCode = StatusCode
+            };
+        }
+        public static ApiResponse SuccessObject(object Data, int StatusCode = 200)
+        {
+            return new ApiResponse
+            {
+                Data = Data,
+                Errors = null,
+                StatusCode = StatusCode
+            };
+        }
     }
 }
