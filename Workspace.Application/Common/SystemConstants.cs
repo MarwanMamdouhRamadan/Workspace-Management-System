@@ -24,5 +24,10 @@ namespace Workspace.Application.Common
             public const string Admin = "Admin";
             public const string Customer = "Customer";
         }
+        public static class Rooms
+        {
+            public const string Active = "Active";
+            public const string Closed = "Closed";
+        }
     }
 }

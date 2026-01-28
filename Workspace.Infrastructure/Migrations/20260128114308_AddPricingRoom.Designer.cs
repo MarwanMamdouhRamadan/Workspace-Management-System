@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Workspace_Management_System.Data;
 
@@ -11,9 +12,11 @@ using Workspace_Management_System.Data;
 namespace Workspace.Infrastructure.Migrations
 {
     [DbContext(typeof(WorkSpaceSysContext))]
-    partial class WorkSpaceSysContextModelSnapshot : ModelSnapshot
+    [Migration("20260128114308_AddPricingRoom")]
+    partial class AddPricingRoom
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -155,7 +158,7 @@ namespace Workspace.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Workspace.Domain.Entities.TbRoomRate", b =>
+            modelBuilder.Entity("Workspace.Domain.Entities.TbRoomPricing", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -163,21 +166,22 @@ namespace Workspace.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<decimal>("HourlyRate")
+                    b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("Mode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<long>("PricingTypeId")
+                        .HasColumnType("bigint");
 
                     b.Property<long>("RoomId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PricingTypeId");
+
                     b.HasIndex("RoomId");
 
-                    b.ToTable("TbRoomRates");
+                    b.ToTable("TbRoomPricing");
                 });
 
             modelBuilder.Entity("Workspace_Management_System.Entities.TbBooking", b =>
@@ -392,6 +396,29 @@ namespace Workspace.Infrastructure.Migrations
                     b.ToTable("TbMedia");
                 });
 
+            modelBuilder.Entity("Workspace_Management_System.Entities.TbPricingType", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("ID");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("DurationMinutes")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TypeName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id")
+                        .HasName("PK__TbPricin__3214EC27D0AA45A7");
+
+                    b.ToTable("TbPricingType", (string)null);
+                });
+
             modelBuilder.Entity("Workspace_Management_System.Entities.TbProduct", b =>
                 {
                     b.Property<long>("Id")
@@ -435,19 +462,22 @@ namespace Workspace.Infrastructure.Migrations
                     b.Property<int>("Capacity")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("Price")
+                        .HasColumnType("money");
+
+                    b.Property<long>("PricingTypeId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("PricingTypeID");
+
                     b.Property<string>("RoomName")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<long>("StatusId")
-                        .HasColumnType("bigint");
-
                     b.HasKey("Id")
                         .HasName("PK__TbRoom__3214EC27F54565C8");
 
-                    b.HasIndex("StatusId")
-                        .IsUnique();
+                    b.HasIndex("PricingTypeId");
 
                     b.ToTable("TbRoom", (string)null);
                 });
@@ -650,13 +680,21 @@ namespace Workspace.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Workspace.Domain.Entities.TbRoomRate", b =>
+            modelBuilder.Entity("Workspace.Domain.Entities.TbRoomPricing", b =>
                 {
+                    b.HasOne("Workspace_Management_System.Entities.TbPricingType", "PricingType")
+                        .WithMany()
+                        .HasForeignKey("PricingTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Workspace_Management_System.Entities.TbRoom", "Room")
-                        .WithMany("RoomRates")
+                        .WithMany()
                         .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("PricingType");
 
                     b.Navigation("Room");
                 });
@@ -769,13 +807,13 @@ namespace Workspace.Infrastructure.Migrations
 
             modelBuilder.Entity("Workspace_Management_System.Entities.TbRoom", b =>
                 {
-                    b.HasOne("Workspace_Management_System.Entities.TbStatus", "Status")
-                        .WithOne("Room")
-                        .HasForeignKey("Workspace_Management_System.Entities.TbRoom", "StatusId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("Workspace_Management_System.Entities.TbPricingType", "PricingType")
+                        .WithMany("TbRooms")
+                        .HasForeignKey("PricingTypeId")
+                        .IsRequired()
+                        .HasConstraintName("FK_Room_PricingType");
 
-                    b.Navigation("Status");
+                    b.Navigation("PricingType");
                 });
 
             modelBuilder.Entity("Workspace_Management_System.Entities.TbStatus", b =>
@@ -801,6 +839,11 @@ namespace Workspace.Infrastructure.Migrations
                     b.Navigation("TbInvoiceBookings");
                 });
 
+            modelBuilder.Entity("Workspace_Management_System.Entities.TbPricingType", b =>
+                {
+                    b.Navigation("TbRooms");
+                });
+
             modelBuilder.Entity("Workspace_Management_System.Entities.TbProduct", b =>
                 {
                     b.Navigation("TbBookingProducts");
@@ -808,8 +851,6 @@ namespace Workspace.Infrastructure.Migrations
 
             modelBuilder.Entity("Workspace_Management_System.Entities.TbRoom", b =>
                 {
-                    b.Navigation("RoomRates");
-
                     b.Navigation("TbBookings");
 
                     b.Navigation("TbMedia");
@@ -818,9 +859,6 @@ namespace Workspace.Infrastructure.Migrations
             modelBuilder.Entity("Workspace_Management_System.Entities.TbStatus", b =>
                 {
                     b.Navigation("Product")
-                        .IsRequired();
-
-                    b.Navigation("Room")
                         .IsRequired();
 
                     b.Navigation("TbBookings");

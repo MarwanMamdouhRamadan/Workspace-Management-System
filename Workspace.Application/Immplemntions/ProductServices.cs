@@ -55,7 +55,7 @@ namespace Workspace.Application.Immplemntions
 
         public async Task<bool> deleteProduct(long id)
         {
-            var product = await _repo.getById(id);
+            var product = await _repo.getProductById(id);
             if (product == null)
                 throw new KeyNotFoundException($"Delete failed: Product with ID {id} not found.");
 
@@ -84,7 +84,7 @@ namespace Workspace.Application.Immplemntions
 
         public async Task<ProductDto> getById(long id)
         {
-            var product = await _repo.getById(id);
+            var product = await _repo.getProductById(id);
             if (product == null)
                 throw new KeyNotFoundException($"Product with ID {id} was not found.");
 
@@ -117,7 +117,7 @@ namespace Workspace.Application.Immplemntions
 
         public async Task<bool> putProduct(long id, ProductDto dto)
         {
-            var product = await _repo.getById(id);
+            var product = await _repo.getProductById(id);
             if (product == null)
                 throw new KeyNotFoundException($"Update failed: Product with ID {id} does not exist.");
 

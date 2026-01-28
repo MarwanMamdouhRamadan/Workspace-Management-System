@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Workspace_Management_System.Data;
 
@@ -11,9 +12,11 @@ using Workspace_Management_System.Data;
 namespace Workspace.Infrastructure.Migrations
 {
     [DbContext(typeof(WorkSpaceSysContext))]
-    partial class WorkSpaceSysContextModelSnapshot : ModelSnapshot
+    [Migration("20260128134717_AddStatusToRoom")]
+    partial class AddStatusToRoom
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

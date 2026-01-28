@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Workspace.Domain.Entities;
 using Workspace_Management_System.Entities;
 using Workspace_Managment_System.identity;
 
@@ -28,8 +29,6 @@ public partial class WorkSpaceSysContext : IdentityDbContext<ApplicationUser>
 
     public virtual DbSet<TbMedium> TbMedia { get; set; }
 
-    public virtual DbSet<TbPricingType> TbPricingTypes { get; set; }
-
     public virtual DbSet<TbProduct> TbProducts { get; set; }
 
     public virtual DbSet<TbRoom> TbRooms { get; set; }
@@ -39,6 +38,7 @@ public partial class WorkSpaceSysContext : IdentityDbContext<ApplicationUser>
     public virtual DbSet<TbStatus> TbStatuses { get; set; }
 
     public virtual DbSet<TbStatusType> TbStatusTypes { get; set; }
+    public virtual DbSet<TbRoomRate> TbRoomRates { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -174,15 +174,7 @@ public partial class WorkSpaceSysContext : IdentityDbContext<ApplicationUser>
                 .HasConstraintName("FK_Media_Room");
         });
 
-        modelBuilder.Entity<TbPricingType>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__TbPricin__3214EC27D0AA45A7");
-
-            entity.ToTable("TbPricingType");
-
-            entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.TypeName).HasMaxLength(100);
-        });
+        
 
         modelBuilder.Entity<TbProduct>(entity =>
         {
@@ -204,14 +196,9 @@ public partial class WorkSpaceSysContext : IdentityDbContext<ApplicationUser>
             entity.ToTable("TbRoom");
 
             entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.Price).HasColumnType("money");
-            entity.Property(e => e.PricingTypeId).HasColumnName("PricingTypeID");
+           
+            
             entity.Property(e => e.RoomName).HasMaxLength(200);
-
-            entity.HasOne(d => d.PricingType).WithMany(p => p.TbRooms)
-                .HasForeignKey(d => d.PricingTypeId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Room_PricingType");
         });
 
         modelBuilder.Entity<TbSetting>(entity =>

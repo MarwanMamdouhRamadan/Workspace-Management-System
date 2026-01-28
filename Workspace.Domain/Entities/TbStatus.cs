@@ -13,6 +13,7 @@ public partial class TbStatus
 
     public virtual TbStatusType StatusType { get; set; } = null!;
     public virtual TbProduct Product { get; set; } = null!;
+    public virtual TbRoom Room { get; set; } = null!;
 
     public virtual ICollection<TbBooking> TbBookings { get; set; } = new List<TbBooking>();
 

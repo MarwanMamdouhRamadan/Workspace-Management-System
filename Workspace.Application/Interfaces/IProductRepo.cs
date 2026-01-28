@@ -11,5 +11,6 @@ namespace Workspace.Application.Interfaces
     {
         Task<IEnumerable<TbProduct>> getAllActivatedProducts();
         Task<IEnumerable<TbProduct>> getAllProducts(long statusId);
+        Task<TbProduct> getProductById(long id);
     }
 }

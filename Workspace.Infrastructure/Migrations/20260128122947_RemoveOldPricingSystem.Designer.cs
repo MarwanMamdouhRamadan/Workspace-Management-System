@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Workspace_Management_System.Data;
 
@@ -11,9 +12,11 @@ using Workspace_Management_System.Data;
 namespace Workspace.Infrastructure.Migrations
 {
     [DbContext(typeof(WorkSpaceSysContext))]
-    partial class WorkSpaceSysContextModelSnapshot : ModelSnapshot
+    [Migration("20260128122947_RemoveOldPricingSystem")]
+    partial class RemoveOldPricingSystem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -440,14 +443,8 @@ namespace Workspace.Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<long>("StatusId")
-                        .HasColumnType("bigint");
-
                     b.HasKey("Id")
                         .HasName("PK__TbRoom__3214EC27F54565C8");
-
-                    b.HasIndex("StatusId")
-                        .IsUnique();
 
                     b.ToTable("TbRoom", (string)null);
                 });
@@ -767,17 +764,6 @@ namespace Workspace.Infrastructure.Migrations
                     b.Navigation("tbStatus");
                 });
 
-            modelBuilder.Entity("Workspace_Management_System.Entities.TbRoom", b =>
-                {
-                    b.HasOne("Workspace_Management_System.Entities.TbStatus", "Status")
-                        .WithOne("Room")
-                        .HasForeignKey("Workspace_Management_System.Entities.TbRoom", "StatusId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Status");
-                });
-
             modelBuilder.Entity("Workspace_Management_System.Entities.TbStatus", b =>
                 {
                     b.HasOne("Workspace_Management_System.Entities.TbStatusType", "StatusType")
@@ -818,9 +804,6 @@ namespace Workspace.Infrastructure.Migrations
             modelBuilder.Entity("Workspace_Management_System.Entities.TbStatus", b =>
                 {
                     b.Navigation("Product")
-                        .IsRequired();
-
-                    b.Navigation("Room")
                         .IsRequired();
 
                     b.Navigation("TbBookings");

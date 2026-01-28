@@ -24,51 +24,45 @@ namespace Workspace_Management_System.Controllers
         public IActionResult getAll()
         {
             var result = _lookupService.GetStatuses();
-            if (result == null || !result.Any()) return ApiResponseHelper.Failure(Errors: "Not found status yet", StatusCode: 404);
+            if (result == null || !result.Any())
+                throw new KeyNotFoundException("No status records found.");
             return ApiResponseHelper.Success(result, StatusCode: 200);
         }
         [HttpGet("search/{TypeName}")]
         public IActionResult getByName(string TypeName)
         {
             var result = _lookupService.GetStatuses().FirstOrDefault(x => x.StatusName.ToLower().Trim() == TypeName.ToLower().Trim());
-            if (result == null) return ApiResponseHelper.Failure(Errors: "Not found status", StatusCode: 404);
+            if (result == null)
+                throw new KeyNotFoundException($"Status with name '{TypeName}' was not found.");
             return ApiResponseHelper.Success(result, StatusCode: 200);
         }
         [HttpPost]
         public async Task<IActionResult> addStatusType([FromBody] StatusDto dto)
         {
-            try
+            var statusType = new TbStatus
             {
-                var statusType = new TbStatus
-                {
-                    StatusName = dto.StatusName,
-                    StatusTypeId = dto.StatusTypeId,
-                };
-                await _genricRepo.add(statusType);
-                _lookupService.RefreshCache();
-                return ApiResponseHelper.Success(Data: "The status  is created", StatusCode: 200);
-            }
-            catch (Exception ex)
-            {
-                return ApiResponseHelper.Failure(Errors: "Faild to create status ", StatusCode: 500);
-            }
+                StatusName = dto.StatusName,
+                StatusTypeId = dto.StatusTypeId,
+            };
+
+            await _genricRepo.add(statusType);
+            _lookupService.RefreshCache();
+
+            return ApiResponseHelper.Success("The status is created");
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> putStatusType(int id, [FromBody] StatusDto dto)
         {
-            try
-            {
-                var statusType = await _genricRepo.getById(id);
-                if (statusType == null) return ApiResponseHelper.Failure(Errors: "Not found status", StatusCode: 404);
-                statusType.StatusName = dto.StatusName;
-                _genricRepo.update(statusType);
-                _lookupService.RefreshCache();
-                return ApiResponseHelper.Success(Data: "The status  is updated", StatusCode: 200);
-            }
-            catch
-            {
-                return ApiResponseHelper.Failure(Errors: "Faild to update status ", StatusCode: 500);
-            }
+            var statusType = await _genricRepo.getById(id);
+
+            if (statusType == null)
+                throw new KeyNotFoundException($"Status with ID {id} not found.");
+
+            statusType.StatusName = dto.StatusName;
+            _genricRepo.update(statusType);
+            _lookupService.RefreshCache();
+
+            return ApiResponseHelper.Success("The status is updated");
         }
 
     }

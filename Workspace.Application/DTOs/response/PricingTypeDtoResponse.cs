@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace Workspace.Application.DTOs.response
 {
-    internal class RoomTypeDtoResponse
+    public class PricingTypeDtoResponse
     {
+        public long Id { get; set; }
+
+        public string TypeName { get; set; } = null!;
+
+        public int DurationMinutes { get; set; }
     }
 }
