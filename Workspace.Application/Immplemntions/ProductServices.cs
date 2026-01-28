@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Workspace.Application.DTOs.request;
 using Workspace.Application.Interfaces;
 using Workspace_Management_System.Entities;
+using static Workspace.Application.Common.SystemConstants;
 
 namespace Workspace.Application.Immplemntions
 {
@@ -22,7 +23,7 @@ namespace Workspace.Application.Immplemntions
 
         public async Task<bool> addProduct(ProductDto dto)
         {
-            var status = _lookupServices.GetStatusId("Product", "Active");
+            var status = _lookupServices.GetStatusId(StatusTypes.Product, ProductStatus.Active);
             if (status == 0) return false;
             var product = new TbProduct
             {
@@ -37,7 +38,7 @@ namespace Workspace.Application.Immplemntions
 
         public async Task<bool> changeProductStatus(PutProductStatus dto)
         {
-            var status = _lookupServices.getStatus(dto.statusId, "Product");
+            var status = _lookupServices.getStatus(dto.statusId, StatusTypes.Product);
             if (status == null) return false;
             var product =await _repo.getById(dto.productId);
             if (product == null) return false;
@@ -50,7 +51,7 @@ namespace Workspace.Application.Immplemntions
         {
             var product = await _repo.getById(id);
             if (product == null) return false;
-            var statusId = _lookupServices.GetStatusId("Product", "Closed");
+            var statusId = _lookupServices.GetStatusId(StatusTypes.Product, ProductStatus.Closed);
             if(statusId == 0) return false;
             product.StatusId = statusId;
             _repo.update(product);
@@ -83,7 +84,7 @@ namespace Workspace.Application.Immplemntions
         public async Task<IEnumerable<object>> getProductsByStatus(long statusId)
         {
            var products = await _repo.getAllProducts(statusId);
-            var status = _lookupServices.getStatus(statusId, "Product");
+            var status = _lookupServices.getStatus(statusId, StatusTypes.Product);
             return products.Select(x => new 
             {
                 ProductName = x.ProductName,
