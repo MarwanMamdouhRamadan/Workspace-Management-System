@@ -146,6 +146,8 @@ builder.Services.AddScoped<IProductRepo, ProductRepo>();
 builder.Services.AddScoped<IProductServices, ProductServices>();
 builder.Services.AddScoped<IRoomRepo,RoomRepo>();
 builder.Services.AddScoped<IRoomServices, RoomServices>();
+builder.Services.AddScoped<IRoomRateServices, RoomRateServices>();
+builder.Services.AddScoped<IRoomRateRepo, RoomRateRepo>();
 #endregion
 
 var app = builder.Build();
