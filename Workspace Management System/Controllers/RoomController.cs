@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Workspace.Application.Common;
 using Workspace.Application.DTOs.request;
 using Workspace.Application.Interfaces;
 using Workspace.Application.Utilities;
@@ -36,24 +38,28 @@ namespace Workspace_Management_System.Controllers
             return ApiResponseHelper.Success(Data: product, StatusCode: 200);
         }
         [HttpPost]
+        [Authorize(Roles = SystemConstants.Roles.Admin)]
         public async Task<IActionResult> addProduct([FromBody] RoomDto dto)
         {
             await _roomServices.addRoom(dto);
             return ApiResponseHelper.Success(Data: "Room is craeted", StatusCode: 200);
         }
         [HttpPut("{id}")]
+        [Authorize(Roles = SystemConstants.Roles.Admin)]
         public async Task<IActionResult> putProduct(long id, [FromBody] RoomDto dto)
         {
             await _roomServices.putRoom(id, dto);
             return ApiResponseHelper.Success(Data: "Room is updated", StatusCode: 200);
         }
         [HttpPut("DeleteProduct/{id}")]
+        [Authorize(Roles = SystemConstants.Roles.Admin)]
         public async Task<IActionResult> deleteProduct(long id)
         {
             await _roomServices.deleteRoom(id);
             return ApiResponseHelper.Success(Data: "Room is deleted", StatusCode: 200);
         }
         [HttpPut("ChangeProductStatus")]
+        [Authorize(Roles = SystemConstants.Roles.Admin)]
         public async Task<IActionResult> changeProductStatus([FromBody] PutRoomStatus dto)
         {
             await _roomServices.changeRoomStatus(dto);

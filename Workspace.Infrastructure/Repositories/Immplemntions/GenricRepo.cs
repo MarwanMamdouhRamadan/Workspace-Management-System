@@ -25,13 +25,11 @@ namespace Workspace.Infrastructure.Repositories.Immplemntions
         public async Task add(T entity)
         {
             await _dbSet.AddAsync(entity);
-            await db.SaveChangesAsync();
         }
 
         public void delete(T entity)
         {
             _dbSet.Remove(entity);
-            db.SaveChanges();
         }
 
         public async Task<IEnumerable<T>> getAll()
@@ -47,7 +45,7 @@ namespace Workspace.Infrastructure.Repositories.Immplemntions
         public void update(T entity)
         {
             _dbSet.Update(entity);
-            db.SaveChanges();
+            
         }
     }
 }

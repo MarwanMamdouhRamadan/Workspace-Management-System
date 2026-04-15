@@ -31,5 +31,7 @@ namespace Workspace.Infrastructure.Repositories.Immplemntions
         {
             return await _dbSet.Include(x => x.Status).Where(x => x.Status.StatusName == SystemConstants.Rooms.Active).FirstOrDefaultAsync(x => x.Id == id);
         }
+
+       
     }
 }

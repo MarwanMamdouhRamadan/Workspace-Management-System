@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Workspace.Application.Common;
 using Workspace.Application.DTOs.request;
 using Workspace.Application.Interfaces;
 using Workspace.Application.Utilities;
@@ -10,14 +12,15 @@ namespace Workspace_Management_System.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = SystemConstants.Roles.Admin)]
     public class StatusController : ControllerBase
     {
-        IGenricRepo<TbStatus> _genricRepo;
+        IUnitOfWork _unitOfWork;
         IStatusLookupService _lookupService;
 
-        public StatusController(IGenricRepo<TbStatus> genricRepo, IStatusLookupService lookupService)
+        public StatusController(IUnitOfWork unitOfWork, IStatusLookupService lookupService)
         {
-            _genricRepo = genricRepo;
+            _unitOfWork = unitOfWork;
             _lookupService = lookupService;
         }
         [HttpGet]
@@ -45,7 +48,8 @@ namespace Workspace_Management_System.Controllers
                 StatusTypeId = dto.StatusTypeId,
             };
 
-            await _genricRepo.add(statusType);
+            await _unitOfWork.statusRepo.add(statusType);
+            await _unitOfWork.CompleteAsync();
             _lookupService.RefreshCache();
 
             return ApiResponseHelper.Success("The status is created");
@@ -53,13 +57,14 @@ namespace Workspace_Management_System.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> putStatusType(int id, [FromBody] StatusDto dto)
         {
-            var statusType = await _genricRepo.getById(id);
+            var statusType = await _unitOfWork.statusRepo.getById(id);
 
             if (statusType == null)
                 throw new KeyNotFoundException($"Status with ID {id} not found.");
 
             statusType.StatusName = dto.StatusName;
-            _genricRepo.update(statusType);
+            _unitOfWork.statusRepo.update(statusType);
+            await _unitOfWork.CompleteAsync();
             _lookupService.RefreshCache();
 
             return ApiResponseHelper.Success("The status is updated");

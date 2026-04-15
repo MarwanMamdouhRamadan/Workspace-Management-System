@@ -12,10 +12,10 @@ namespace Workspace.Application.Immplemntions
 {
     public class RoomServices : IRoomServices
     {
-        IRoomRepo _repo;
+        IUnitOfWork _repo;
         IStatusLookupService _lookupServices;
 
-        public RoomServices(IRoomRepo genric, IStatusLookupService statusLookupService)
+        public RoomServices(IUnitOfWork genric, IStatusLookupService statusLookupService)
         {
             _repo = genric;
             _lookupServices = statusLookupService;
@@ -33,7 +33,8 @@ namespace Workspace.Application.Immplemntions
                 RoomName = dto.RoomName,
                 StatusId = status,
             };
-            await _repo.add(room);
+            await _repo.roomRepo.add(room);
+            await _repo.CompleteAsync();
             return true;
         }
 
@@ -43,18 +44,19 @@ namespace Workspace.Application.Immplemntions
             if (status == null)
                 throw new KeyNotFoundException($"The status ID {dto.statusId} is not valid for rooms.");
 
-            var room = await _repo.getById(dto.roomId);
+            var room = await _repo.roomRepo.getById(dto.roomId);
             if (room == null)
                 throw new KeyNotFoundException($"Update failed: rooms with ID {dto.roomId} not found.");
 
             room.StatusId = status.id;
-            _repo.update(room);
+            _repo.roomRepo.update(room);
+            await _repo.CompleteAsync();
             return true;
         }
 
         public async Task<bool> deleteRoom(long id)
         {
-            var room = await _repo.getRoomById(id);
+            var room = await _repo.roomRepo.getRoomById(id);
             if (room == null)
                 throw new KeyNotFoundException($"Delete failed: rooms with ID {id} not found.");
 
@@ -63,15 +65,16 @@ namespace Workspace.Application.Immplemntions
                 throw new KeyNotFoundException("System Error: 'Closed' status configuration is missing.");
 
             room.StatusId = statusId;
-            _repo.update(room);
+            _repo.roomRepo.update(room);
+            await _repo.CompleteAsync();
             return true;
         }
 
         public async Task<IEnumerable<RoomDto>> getAll()
         {
-            var rooms = await _repo.getAllActivatedRooms();
+            var rooms = await _repo.roomRepo.getAllActivatedRooms();
             if (rooms == null || !rooms.Any())
-                throw new KeyNotFoundException("No active rooms were found in the database.");
+                return Enumerable.Empty<RoomDto>();
 
             return rooms.Select(x => new RoomDto
             {
@@ -82,7 +85,7 @@ namespace Workspace.Application.Immplemntions
 
         public async Task<RoomDto> getById(long id)
         {
-            var room = await _repo.getRoomById(id);
+            var room = await _repo.roomRepo.getRoomById(id);
             if (room == null)
                 throw new KeyNotFoundException($"Room with ID {id} was not found.");
 
@@ -95,7 +98,7 @@ namespace Workspace.Application.Immplemntions
 
         public async Task<IEnumerable<object>> getRoomByStatus(long statusId)
         {
-            var rooms = await _repo.getAllRooms(statusId);
+            var rooms = await _repo.roomRepo.getAllRooms(statusId);
             if (rooms == null || !rooms.Any())
                 throw new KeyNotFoundException($"No rooms found associated with status ID {statusId}.");
 
@@ -113,14 +116,15 @@ namespace Workspace.Application.Immplemntions
 
         public async Task<bool> putRoom(long id, RoomDto dto)
         {
-            var room = await _repo.getRoomById(id);
+            var room = await _repo.roomRepo.getRoomById(id);
             if (room == null)
                 throw new KeyNotFoundException($"Update failed: Product with ID {id} does not exist.");
 
             room.RoomName = dto.RoomName;
             room.Capacity = dto.Capacity;
 
-            _repo.update(room);
+            _repo.roomRepo.update(room);
+            await _repo.CompleteAsync();
             return true;
         }
     }

@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Workspace_Managment_System.identity;
 
 namespace Workspace_Management_System.Entities;
 
-public partial class TbBooking
+public partial class TbBooking 
 {
     public long Id { get; set; }
     public string UserId { get; set; }
@@ -27,7 +28,7 @@ public partial class TbBooking
     public virtual TbRoom Room { get; set; } = null!;
 
     public virtual TbStatus Status { get; set; } = null!;
-
+   
     public virtual ICollection<TbBookingProduct> TbBookingProducts { get; set; } = new List<TbBookingProduct>();
 
     public virtual TbInvoiceBooking? TbInvoiceBooking { get; set; }

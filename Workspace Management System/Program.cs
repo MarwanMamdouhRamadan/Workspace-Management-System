@@ -1,17 +1,18 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Workspace.Application.Immplemntions;
 using Workspace.Application.Interfaces;
 using Workspace.Application.Services;
+using Workspace.Infrastructure;
 using Workspace.Infrastructure.Repositories.Immplemntions;
 using Workspace.Infrastructure.Repositories.Implemntion;
-using Workspace.Infrastructure;
 using Workspace_Management_System.Data;
-using Workspace_Managment_System.identity;
-using Workspace.Application.Immplemntions;
 using Workspace_Management_System.Middlewares;
+using Workspace_Managment_System.identity;
 
 var builder = WebApplication.CreateBuilder(args);
 #region Add services to the container
@@ -32,11 +33,12 @@ builder.Services.AddSwaggerGen(options =>
     // Add JWT Authentication to Swagger
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = "JWT Authorization header using the Bearer scheme. Enter 'Bearer' [space] and then your token",
-        Name = "Authorization",
         In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
+        Description = "Just paste your raw JWT Token below (no need to type 'Bearer ')",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "bearer"
     });
 
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -148,9 +150,52 @@ builder.Services.AddScoped<IRoomRepo,RoomRepo>();
 builder.Services.AddScoped<IRoomServices, RoomServices>();
 builder.Services.AddScoped<IRoomRateServices, RoomRateServices>();
 builder.Services.AddScoped<IRoomRateRepo, RoomRateRepo>();
+builder.Services.AddScoped<IBookingRepo, BookingRepo>();
+builder.Services.AddScoped<IBookingServices, BookingServices>();
+builder.Services.AddScoped<IInvoiceRepo, InvoiceRepo>();
+builder.Services.AddScoped<IInvoiceServices, InvoiceServices>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 #endregion
 
 var app = builder.Build();
+
+// --- Seed Roles and Admin User Start ---
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+    // 1. Ensure Identity Roles exist
+    string[] roles = { "Admin", "Customer" };
+    foreach (var role in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+        {
+            await roleManager.CreateAsync(new IdentityRole(role));
+        }
+    }
+
+    // 2. Ensure Admin user exists and has the Admin role
+    var adminEmail = "trail@gmail.com";
+    var adminUser = await userManager.FindByEmailAsync(adminEmail);
+    if (adminUser == null)
+    {
+        adminUser = new ApplicationUser
+        {
+            UserName = adminEmail,
+            Email = adminEmail,
+            FullName = "Administrator"
+        };
+        await userManager.CreateAsync(adminUser, "Maro@123");
+    }
+
+    // 3. Guarantee the target account actually holds the "Admin" Role payload for access
+    if (!await userManager.IsInRoleAsync(adminUser, "Admin"))
+    {
+        await userManager.AddToRoleAsync(adminUser, "Admin");
+    }
+}
+// --- Seed Roles and Admin User End ---
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -158,11 +203,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-app.UseMiddleware<ExceptionMiddleware>();
 app.MapControllers();
 
 app.Run();

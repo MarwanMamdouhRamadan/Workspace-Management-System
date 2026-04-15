@@ -46,6 +46,18 @@ namespace Workspace_Management_System.Middlewares
                     statusCode = 400;
                     message = ex.Message;
                     break;
+                case InvalidOperationException:
+                    statusCode = 409; 
+                    message = ex.Message;
+                    break;
+                case System.ComponentModel.DataAnnotations.ValidationException valEx:
+                    statusCode = 400;
+                    message = valEx.Message; 
+                    break;
+                case BadHttpRequestException: 
+                    statusCode = 400;
+                    message = ex.Message;
+                    break;
 
             }
             context.Response.StatusCode = statusCode;

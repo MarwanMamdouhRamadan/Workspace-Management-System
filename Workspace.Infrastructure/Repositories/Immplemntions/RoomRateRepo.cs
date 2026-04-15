@@ -17,6 +17,11 @@ namespace Workspace.Infrastructure.Repositories.Immplemntions
         {
         }
 
+        public async Task<TbRoomRate> getRoomRate(long roomId, string Mode)
+        {
+            return await _dbSet.FirstOrDefaultAsync(x => x.RoomId == roomId && x.Mode == Mode);
+        }
+
         public async Task<TbRoomRate> getRoomRateById(long id)
         {
             return await _dbSet.Include(r => r.Room).FirstOrDefaultAsync(x => x.Id == id);

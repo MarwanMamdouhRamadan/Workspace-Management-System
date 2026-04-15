@@ -11,5 +11,6 @@ namespace Workspace.Application.Interfaces
     {
         public Task<IEnumerable<TbRoomRate>> getRoomRates();
         public Task<TbRoomRate> getRoomRateById(long id);
+        public Task<TbRoomRate> getRoomRate(long roomId , string Mode);
     }
 }

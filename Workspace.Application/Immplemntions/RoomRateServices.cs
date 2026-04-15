@@ -12,9 +12,9 @@ namespace Workspace.Application.Immplemntions
 {
     public class RoomRateServices : IRoomRateServices
     {
-        IRoomRateRepo _repo;
+        IUnitOfWork _repo;
 
-        public RoomRateServices(IRoomRateRepo repo)
+        public RoomRateServices(IUnitOfWork repo)
         {
             _repo = repo;
         }
@@ -27,14 +27,15 @@ namespace Workspace.Application.Immplemntions
                 Mode = dto.Mode,
                 RoomId = dto.RoomId,
             };
-            await _repo.add(roomRate);
+            await _repo.roomRateRepo.add(roomRate);
+            await _repo.CompleteAsync();
             return true;
         }
 
         public async Task<IEnumerable<RoomRateResponseDto>> getAll()
         {
-            var roomRates = await _repo.getRoomRates();
-            if (roomRates == null || !roomRates.Any()) throw new KeyNotFoundException("No  room rates were found in the database.");
+            var roomRates = await _repo.roomRateRepo.getRoomRates();
+            if (roomRates == null || !roomRates.Any()) return Enumerable.Empty<RoomRateResponseDto>();
             return roomRates.Select(x => new RoomRateResponseDto
             {
                 HourlyRate= x.HourlyRate,
@@ -45,7 +46,7 @@ namespace Workspace.Application.Immplemntions
 
         public async Task<RoomRateResponseDto> getById(long id)
         {
-            var roomRate = await _repo.getRoomRateById(id);
+            var roomRate = await _repo.roomRateRepo.getRoomRateById(id);
             if (roomRate == null) throw new KeyNotFoundException($"Room rate with ID {id} was not found.");
             return new RoomRateResponseDto
             {
@@ -57,12 +58,13 @@ namespace Workspace.Application.Immplemntions
 
         public async Task<bool> putRoomRate(long id, RoomRateDto dto)
         {
-            var roomRate = await _repo.getById(id);
+            var roomRate = await _repo.roomRateRepo.getById(id);
             if (roomRate == null) throw new KeyNotFoundException($"Room rate with ID {id} was not found.");
             roomRate.HourlyRate = dto.HourlyRate;
             roomRate.Mode = dto.Mode;
             roomRate.RoomId = dto.RoomId;
-            _repo.update(roomRate);
+            _repo.roomRateRepo.update(roomRate);
+            await _repo.CompleteAsync();
             return true;
         }
     }

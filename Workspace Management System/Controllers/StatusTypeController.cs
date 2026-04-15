@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Workspace.Application.Common;
 using Workspace.Application.DTOs.request;
 using Workspace.Application.Interfaces;
 using Workspace.Application.Utilities;
@@ -11,14 +13,16 @@ namespace Workspace_Management_System.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = SystemConstants.Roles.Admin)]
     public class StatusTypeController : ControllerBase
     {
-        IGenricRepo<TbStatusType> _genricRepo;
+       
+        IUnitOfWork _unitOfWork;
         IStatusLookupService _lookupService;
 
-        public StatusTypeController(IGenricRepo<TbStatusType> genricRepo, IStatusLookupService lookupService)
+        public StatusTypeController(IUnitOfWork unitOfWork, IStatusLookupService lookupService)
         {
-            _genricRepo = genricRepo;
+            _unitOfWork = unitOfWork;
             _lookupService = lookupService;
         }
         [HttpGet]
@@ -45,7 +49,8 @@ namespace Workspace_Management_System.Controllers
                 TypeName = dto.TypeName,
             };
 
-            await _genricRepo.add(statusType);
+            await _unitOfWork.statusTypeRepo.add(statusType);
+            await _unitOfWork.CompleteAsync();
             _lookupService.RefreshCache();
 
             return ApiResponseHelper.Success("The status type is created successfully.");
@@ -53,13 +58,14 @@ namespace Workspace_Management_System.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> putStatusType(int id,[FromBody] StatusTypeDto dto)
         {
-            var statusType = await _genricRepo.getById(id);
+            var statusType = await _unitOfWork.statusTypeRepo.getById(id);
 
             if (statusType == null)
                 throw new KeyNotFoundException($"Update failed: Status type with ID {id} not found.");
 
             statusType.TypeName = dto.TypeName;
-            _genricRepo.update(statusType);
+            _unitOfWork.statusTypeRepo.update(statusType);
+            await _unitOfWork.CompleteAsync();
             _lookupService.RefreshCache();
 
             return ApiResponseHelper.Success("The status type is updated successfully.");

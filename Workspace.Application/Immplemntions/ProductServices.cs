@@ -12,10 +12,10 @@ namespace Workspace.Application.Immplemntions
 {
     public class ProductServices : IProductServices
     {
-        IProductRepo _repo;
+        IUnitOfWork _repo;
         IStatusLookupService _lookupServices;
 
-        public ProductServices(IProductRepo repo, IStatusLookupService lookupServices)
+        public ProductServices(IUnitOfWork repo, IStatusLookupService lookupServices)
         {
             _repo = repo;
             _lookupServices = lookupServices;
@@ -34,7 +34,8 @@ namespace Workspace.Application.Immplemntions
                 Stock = dto.Stock,
                 StatusId = status,
             };
-            await _repo.add(product);
+            await _repo.productRepo.add(product);
+            await _repo.CompleteAsync();
             return true;
         }
 
@@ -44,18 +45,19 @@ namespace Workspace.Application.Immplemntions
             if (status == null)
                 throw new KeyNotFoundException($"The status ID {dto.statusId} is not valid for products.");
 
-            var product = await _repo.getById(dto.productId);
+            var product = await _repo.productRepo.getById(dto.productId);
             if (product == null)
                 throw new KeyNotFoundException($"Update failed: Product with ID {dto.productId} not found.");
 
             product.StatusId = status.id;
-            _repo.update(product);
+            _repo.productRepo.update(product);
+            await _repo.CompleteAsync();
             return true;
         }
 
         public async Task<bool> deleteProduct(long id)
         {
-            var product = await _repo.getProductById(id);
+            var product = await _repo.productRepo.getProductById(id);
             if (product == null)
                 throw new KeyNotFoundException($"Delete failed: Product with ID {id} not found.");
 
@@ -64,15 +66,16 @@ namespace Workspace.Application.Immplemntions
                 throw new KeyNotFoundException("System Error: 'Closed' status configuration is missing.");
 
             product.StatusId = statusId;
-            _repo.update(product);
+            _repo.productRepo.update(product);
+            await _repo.CompleteAsync();
             return true;
         }
 
         public async Task<IEnumerable<ProductDto>> getAll()
         {
-            var products = await _repo.getAllActivatedProducts();
+            var products = await _repo.productRepo.getAllActivatedProducts();
             if (products == null || !products.Any())
-                throw new KeyNotFoundException("No active products were found in the database.");
+               return Enumerable.Empty<ProductDto>();
 
             return products.Select(x => new ProductDto
             {
@@ -84,7 +87,7 @@ namespace Workspace.Application.Immplemntions
 
         public async Task<ProductDto> getById(long id)
         {
-            var product = await _repo.getProductById(id);
+            var product = await _repo.productRepo.getProductById(id);
             if (product == null)
                 throw new KeyNotFoundException($"Product with ID {id} was not found.");
 
@@ -98,7 +101,7 @@ namespace Workspace.Application.Immplemntions
 
         public async Task<IEnumerable<object>> getProductsByStatus(long statusId)
         {
-            var products = await _repo.getAllProducts(statusId);
+            var products = await _repo.productRepo.getAllProducts(statusId);
             if (products == null || !products.Any())
                 throw new KeyNotFoundException($"No products found associated with status ID {statusId}.");
 
@@ -117,7 +120,7 @@ namespace Workspace.Application.Immplemntions
 
         public async Task<bool> putProduct(long id, ProductDto dto)
         {
-            var product = await _repo.getProductById(id);
+            var product = await _repo.productRepo.getProductById(id);
             if (product == null)
                 throw new KeyNotFoundException($"Update failed: Product with ID {id} does not exist.");
 
@@ -125,7 +128,8 @@ namespace Workspace.Application.Immplemntions
             product.Price = dto.Price;
             product.Stock = dto.Stock;
 
-            _repo.update(product);
+             _repo.productRepo.update(product);
+            await _repo.CompleteAsync();
             return true;
         }
     }

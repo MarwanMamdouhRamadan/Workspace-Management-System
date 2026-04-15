@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Workspace.Application.Common;
 using Workspace.Application.DTOs;
 using Workspace.Application.DTOs.request;
 using Workspace.Application.Interfaces;
@@ -9,6 +11,7 @@ namespace Workspace_Management_System.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = SystemConstants.Roles.Admin)]
     public class RoomRateController : ControllerBase
     {
         IRoomRateServices _roomRate;
